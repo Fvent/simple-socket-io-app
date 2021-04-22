@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>some page</title>
+</head>
+<script src = "/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+
+    socket.on('broadcast', data => {
+        // console.log(data);
+        var node = document.createElement("LI");
+        var text = document.createTextNode(data.username+" : "+ data.message);
+        node.appendChild(text);
+        document.getElementById('message-ul').appendChild(node);
+    });
+
+    // var node = document.createElement("LI");                 // Create a <li> node
+    // var textnode = document.createTextNode("Water");         // Create a text node
+    // node.appendChild(textnode);                              // Append the text to <li>
+    // document.getElementById("myList").appendChild(node); 
+
+    function setUsername(){
+        var username = document.getElementById('inputUsername').value;
+        sessionStorage.setItem('username',username);
+        document.getElementById('setUsernameDiv').remove();
+    }
+
+    function sendMessage(){
+        var text = document.getElementById('inputMessage').value;
+        // console.log(text);
+        socket.emit('message', {username: sessionStorage.getItem('username'), message: text});
+        document.getElementById('inputMessage').value='';
+    }
+
+</script>
+<body>
+    <h1>Hello world</h1>
+    <div id="setUsernameDiv">
+        <input type="text" id="inputUsername" />
+        <button type="button" onclick="setUsername()">Enter</button>
+    </div>
+    <input type="text" id="inputMessage" />
+    <button type="button" onclick="sendMessage()">Enter</button>
+
+    <div id="message-display">
+        <ul id="message-ul">
+
+        </ul>
+    </div>
+</body>
+</html>
